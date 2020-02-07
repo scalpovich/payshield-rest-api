@@ -1,16 +1,18 @@
 # Payshield-rest-api
 
-This is a simple RestAPI for Thales payShield HSM. It has been tested with Thales payShield 9000 and payShield 10K. This example demonstrate how to check version of HSM, verify PIN, encrypt data and decrypt data using RestAPI.
+This is a simple RestAPI for Thales payShield HSM. It has been tested with Thales payShield 9000 and payShield 10K. This example demonstrate how to check version of HSM, verify PIN, encrypt, decrypt, tokenise and detokenise data using RestAPI.
 
 ## Installation
 
-You need to install Gin framework to running this code. To install Gin package, you need to install Go and set your Go workspace first, then you can use the below Go command to install Gin:
+You need to install Gin framework and Viper to running this code. Before install Gin and Viper package, you need to install Go and set your Go workspace first, then you can use the below Go command to install Gin and Viper:
 ```
 > go get -u github.com/gin-gonic/gin
+
+> go get github.com/spf13/viper
 ```
 ## Usage
 
-To run this code (server side), go to bin directory and execute:
+To run the server side code, you need to set the hsmapi folder in Go root. Then go to bin directory and execute:
 ```
 > go run main.go
 ```
@@ -72,9 +74,3 @@ You can use curl application or another GUI apps such as Postman as a client to 
 > curl -X POST http://localhost:8080/detokenise -u "custservice:p@ssw0rd" --data-binary @detokenise-profile1.txt
 {"error":"Unauthorized"}
 ```
-
-
-
-
-
-
