@@ -163,7 +163,7 @@ func main() {
 			return
 		} 
 		
-		resmask := createMasking(json.Profile, res)
+		resmask := createMask(json.Profile, res)
 
 		c.JSON(http.StatusOK, gin.H{"data": resmask})
 	})
@@ -192,7 +192,7 @@ func main() {
 		fmt.Println("Load file config Server error")
 	}
 
-	r.Run(":" + viper.GetString("server.port"))
+	r.RunTLS(":" + viper.GetString("server.port"), "server.crt", "server.key")
 }
 
 func authenticateUser(username, password, profile string) bool {
@@ -234,10 +234,10 @@ func checkProfile(profile string) string {
 		fmt.Println("Load file config profile error")
 	}
 
-	return viper.GetString(profile + "." + "charset")
+	return viper.GetString(profile + ".maskProfile.charset")
 }
 
-func createMasking(profile, data string) string {
+func createMask(profile, data string) string {
 	viper.SetConfigType("json")
 	viper.AddConfigPath(".")
 	viper.SetConfigName("profile.conf")
@@ -247,10 +247,16 @@ func createMasking(profile, data string) string {
 		fmt.Println("Load file config profile error")
 	}
 
-	ppl := viper.GetInt(profile + "." + "preservedPrefixLength")
-	psl := viper.GetInt(profile + "." + "preservedSuffixLength")
+	ppl := viper.GetInt(profile + ".maskProfile." + "preservedPrefixLength")
+	psl := viper.GetInt(profile + ".maskProfile." + "preservedSuffixLength")
+
+	if ppl+psl > len(data) {
+		err := "Preserved prefix and suffix length in mask profile not consistent"
+		return err
+	}
+
 	datappl := data[:ppl]
 	datapsl := data[(len(data)-psl):]
-	maskchar := viper.GetString(profile + "." + "maskChar")
+	maskchar := viper.GetString(profile + ".maskProfile." + "maskChar")
 	return  datappl +  strings.Repeat(maskchar, len(data[ppl:len(data)-psl])) + datapsl
 }
