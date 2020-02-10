@@ -8,6 +8,12 @@ You need to install Gin framework to running this code. To install Gin package, 
 ```
 > go get -u github.com/gin-gonic/gin
 ```
+
+For server key and certificate, you can generate using application such as openssl. The command are below:
+```
+> openssl req -newkey rsa:2048 -nodes -keyout server.key -x509 -days 365 -out server.crt
+```
+
 ## Usage
 
 To run this code (server side), go to bin directory and execute:
