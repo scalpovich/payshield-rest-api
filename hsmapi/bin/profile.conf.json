@@ -1,32 +1,44 @@
 {
     "creditcard": {
-		"username":"foo",
+	"username":"foo",
         "password":"bar",
-        "charset": "Numeric",
-        "maskChar": "#",
         "keyName":"tokenkey",
-        "key": "S1012821AN00S00013472752D0BD63C7F74DC6413E9666674702D376D8521110E1B0389E7301F59970591F7254E3534210169A54985BA9805F58B44A063F9A286", 
+        "key": "S1012821AN00S00013472752D0BD63C7F74DC6413E9666674702D376D8521110E1B0389E7301F59970591F7254E3534210169A54985BA9805F58B44A063F9A286",
         "preservedPrefixLength": 0,
-        "preservedSuffixLength": 0
+        "preservedSuffixLength": 0,
+        "maskProfile": {
+            "charset": "Numeric",
+            "maskChar": "*",
+            "preservedPrefixLength": 0,
+            "preservedSuffixLength": 0
+        }
     },
     "creditcard2": {
-		"username":"johndoe",
+	"username":"johndoe",
         "password":"123456",
-        "charset": "Numeric", 
-        "maskChar": "#",
         "keyName":"K123456",
         "key": "S1012822AN00S000153767C37E3DD24D17D98C9EB003C8BDAAEAABD6D4E62C1288358E24E910A49D1A75B157B813DA6903BDC1A5B9EA57FA0D01F4A0E2F9544E5",
         "preservedPrefixLength": 6,
-        "preservedSuffixLength": 4
+        "preservedSuffixLength": 4,
+        "maskProfile": {
+            "charset": "Masking", 
+            "maskChar": "*",
+            "preservedPrefixLength": 6,
+            "preservedSuffixLength": 4
+        }
     },
     "custservice": {
-		"username":"custservice",
+	"username":"custservice",
         "password":"p@ssw0rd",
-        "charset": "Masking", 
-        "maskChar": "*",
         "keyName":"K123456",
         "key": "S1012822AN00S000153767C37E3DD24D17D98C9EB003C8BDAAEAABD6D4E62C1288358E24E910A49D1A75B157B813DA6903BDC1A5B9EA57FA0D01F4A0E2F9544E5",
         "preservedPrefixLength": 6,
-        "preservedSuffixLength": 4
+        "preservedSuffixLength": 4,
+        "maskProfile": {
+            "charset": "Masking", 
+            "maskChar": "#",
+            "preservedPrefixLength": 0,
+            "preservedSuffixLength": 4
+        }
     }
 }
