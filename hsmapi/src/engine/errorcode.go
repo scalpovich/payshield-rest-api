@@ -40,6 +40,8 @@ func CheckErrorCode (ec string) (desc string){
 		Res = "PIN is fewer than 4 or more than 12 digits in length"
 	case "25":
 		Res = "Decimalization Table error"
+	case "911":
+		Res = "Preserved prefix and suffix length in mask profile not consistent"
 	default:
 		Res = ""
 	}
