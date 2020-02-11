@@ -110,7 +110,7 @@ func main() {
 		payload, _ := base64.StdEncoding.DecodeString(auth[1])
 		pair := strings.SplitN(string(payload), ":", 2)
 
-		if len(pair) != 2 || !authenticateUser(pair[0], pair[1], json.Profile) {
+		if len(pair) != 2 || !authenticateUserToken(pair[0], pair[1], json.Profile) {
 			respondWithError(401, "Unauthorized", c)
 			return
 		}
@@ -144,7 +144,9 @@ func main() {
 		payload, _ := base64.StdEncoding.DecodeString(auth[1])
 		pair := strings.SplitN(string(payload), ":", 2)
 
-		if len(pair) != 2 || !authenticateUser(pair[0], pair[1], json.Profile) {
+		var authenticate bool = authenticateUserDetoken(pair[0], pair[1], json.Profile)
+
+		if len(pair) != 2 || !authenticate {
 			respondWithError(401, "Unauthorized", c)
 			return
 		}
@@ -158,14 +160,13 @@ func main() {
 			return
 		}
 
-		if checkProfile(json.Profile) == "Numeric" {
-			c.JSON(http.StatusOK, gin.H{"data": res})
+		if authenticate && checkProfileMask(json.Profile) {
+			resmask := createMask(json.Profile, res)
+			c.JSON(http.StatusOK, gin.H{"data": resmask})
 			return
 		} 
 		
-		resmask := createMask(json.Profile, res)
-
-		c.JSON(http.StatusOK, gin.H{"data": resmask})
+		c.JSON(http.StatusOK, gin.H{"data": res})
 	})
 
 	//Version
@@ -195,7 +196,7 @@ func main() {
 	r.RunTLS(":" + viper.GetString("server.port"), "server.crt", "server.key")
 }
 
-func authenticateUser(username, password, profile string) bool {
+func authenticateUserToken(username, password, profile string) bool {
 
 	viper.SetConfigType("json")
 	viper.AddConfigPath(".")
@@ -208,8 +209,32 @@ func authenticateUser(username, password, profile string) bool {
 
 	USERNAME := viper.GetString(profile + "." + "username")
 	PASSWORD := viper.GetString(profile + "." + "password")
+	TOKENISE := viper.GetBool(profile + "." + "tokenise")
 
-	err := (username == USERNAME) && (password == PASSWORD)
+	err := (username == USERNAME) && (password == PASSWORD) && TOKENISE
+
+	if !err {
+		return false
+	}
+	return true
+}
+
+func authenticateUserDetoken(username, password, profile string) bool {
+
+	viper.SetConfigType("json")
+	viper.AddConfigPath(".")
+	viper.SetConfigName("profile.conf")
+
+	errconf := viper.ReadInConfig()
+	if errconf != nil {
+		fmt.Println("Load file config profile error")
+	}
+
+	USERNAME := viper.GetString(profile + "." + "username")
+	PASSWORD := viper.GetString(profile + "." + "password")
+	TOKENISE := viper.GetBool(profile + "." + "detokenise")
+
+	err := (username == USERNAME) && (password == PASSWORD) && TOKENISE
 
 	if !err {
 		return false
@@ -224,7 +249,7 @@ func respondWithError(code int, message string, c *gin.Context) {
 	c.Abort()
 }
 
-func checkProfile(profile string) string {
+func checkProfileMask(profile string) bool {
 	viper.SetConfigType("json")
 	viper.AddConfigPath(".")
 	viper.SetConfigName("profile.conf")
@@ -234,7 +259,7 @@ func checkProfile(profile string) string {
 		fmt.Println("Load file config profile error")
 	}
 
-	return viper.GetString(profile + ".maskProfile.charset")
+	return viper.GetBool(profile + ".mask")
 }
 
 func createMask(profile, data string) string {
@@ -249,8 +274,8 @@ func createMask(profile, data string) string {
 
 	ppl := viper.GetInt(profile + ".maskProfile." + "preservedPrefixLength")
 	psl := viper.GetInt(profile + ".maskProfile." + "preservedSuffixLength")
-
-	if ppl+psl > len(data) {
+	lenData := len(data)
+	if (ppl+psl > lenData) || (ppl+psl < 0) || (ppl < 0) || (psl < 0) || (ppl > lenData) || (psl > lenData) {
 		err := "Preserved prefix and suffix length in mask profile not consistent"
 		return err
 	}
