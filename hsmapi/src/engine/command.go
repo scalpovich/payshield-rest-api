@@ -231,6 +231,12 @@ func Token(json InpToken) (errcode string, res string) {
 	ppl := viper.GetInt(profile + "." + "preservedPrefixLength")
 	psl := viper.GetInt(profile + "." + "preservedSuffixLength")
 	lenData := len(json.Data)
+
+	if (ppl+psl > lenData) || (ppl+psl < 0) || (ppl < 0) || (psl < 0) || (ppl > lenData) || (psl > lenData) {
+		errcode = "911" 
+		return
+	}
+
 	data := json.Data[ppl : (lenData-psl)]
 	datappl := json.Data[:ppl]
 	datapsl := json.Data[(lenData-psl):]
@@ -309,6 +315,12 @@ func Detoken(json InpDetoken) (errcode string, res string) {
 	ppl := viper.GetInt(profile + "." + "preservedPrefixLength")
 	psl := viper.GetInt(profile + "." + "preservedSuffixLength")
 	lenData := len(json.Token)
+
+	if (ppl+psl > lenData) || (ppl+psl < 0) || (ppl < 0) || (psl < 0) || (ppl > lenData) || (psl > lenData) {
+		errcode = "911" 
+		return
+	}
+
 	data := json.Token[ppl : (lenData-psl)]
 	datappl := json.Token[:ppl]
 	datapsl := json.Token[(lenData-psl):]
