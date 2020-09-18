@@ -1,7 +1,6 @@
 // Copyright PT Dymar Jaya Indonesia
 // Date February 2020
 // RestAPI Thales payShield HSM using Golang
-// Code by Mudito Adi Pranowo
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
