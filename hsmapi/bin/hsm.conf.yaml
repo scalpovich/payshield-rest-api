@@ -1,5 +1,5 @@
 #hsm configuration
 hsm:
-    ip: 192.168.1.101
+    ip: 192.168.7.29
     portvariant: 1500
     portkeyblock: 1502
